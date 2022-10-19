@@ -7,7 +7,7 @@ from ..views import PostCreateAPIView, CommentCreateAPIView
 
 class TestUrls(APISimpleTestCase):
     def setUp(self):
-        self.base_url = '/social/'
+        self.base_url = '/api/'
         self.app_name = 'social'
         return
 
