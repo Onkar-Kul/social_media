@@ -1,5 +1,4 @@
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenRefreshView
+from django.urls import path
 
 from .views import LoginUserView, PostCreateAPIView, PostDetailAPIView, CommentCreateAPIView, \
     LikeAPIView, UnlikeAPIView, FollowView, UserProfileAPIView, BlackListTokenView
@@ -16,7 +15,7 @@ urlpatterns = [
     path('unlike/<int:pk>/', UnlikeAPIView.as_view(), name='unlike'),
     path('follow/<int:pk>/', FollowView.as_view({'post': 'follow'}), name='follow'),
     path('unfollow/<int:pk>/', FollowView.as_view({'post': 'unfollow'}), name='unfollow'),
-    path('user/<int:pk>/', UserProfileAPIView.as_view(), name='user'),
+    path('user/', UserProfileAPIView.as_view(), name='user'),
     path('logout/', BlackListTokenView.as_view(), name='token_blacklist'),
 
 ]

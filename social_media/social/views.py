@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -19,8 +18,6 @@ class LoginUserView(TokenViewBase):
     Takes a set of user credentials and returns an access and refresh JSON web
     token pair to prove the authentication of those credentials.
 
-    If user is has not verified their email, we send the verification otp
-    email.
     """
     serializer_class = LoginUserSerializer
 
@@ -47,6 +44,9 @@ class BlackListTokenView(APIView):
 
 
 class PostCreateAPIView(ListCreateAPIView):
+    """
+    This view is to create Posts by authenticated users and display all posts to them
+    """
     serializer_class = AllPostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
@@ -56,12 +56,22 @@ class PostCreateAPIView(ListCreateAPIView):
 
 
 class PostDetailAPIView(RetrieveDestroyAPIView):
+    """
+    This view is used to get all the details of the posts and 
+    delete the particular post by authenticated users
+
+    param: pk: Pk should be the post id
+    """
     serializer_class = AllPostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
 
 
 class CommentCreateAPIView(CreateAPIView):
+    """
+    This view used to create Comments on particular post by authenticated user
+    param: pk: pk should be the post id
+    """
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
@@ -72,6 +82,10 @@ class CommentCreateAPIView(CreateAPIView):
 
 
 class LikeAPIView(UpdateAPIView):
+    """
+    This view is used to generate likes on the particular posts by authenticated user
+    param: pk: pk should be the post id
+    """
     serializer_class = AllPostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
@@ -85,6 +99,10 @@ class LikeAPIView(UpdateAPIView):
 
 
 class UnlikeAPIView(UpdateAPIView):
+    """
+    This view is used to unlike the particular posts by authenticated user
+    param: pk: pk should be the post id
+    """
     serializer_class = AllPostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
@@ -100,6 +118,10 @@ class UnlikeAPIView(UpdateAPIView):
 
 
 class FollowView(viewsets.ViewSet):
+    """
+    This view is used to follow and unfollow the user
+    param: pk: pk should be the other user id (not current logged in user id)
+    """
     queryset = Follow.objects.all()
     permission_classes = [IsAuthenticated]
 
@@ -111,9 +133,9 @@ class FollowView(viewsets.ViewSet):
             instance.follow.add(user)
 
         except Follow.DoesNotExist:
-            s = Follow.objects.create(user=self.request.user)
-            s.save()
-            instance = get_object_or_404(Follow, id=s.id)
+            follow = Follow.objects.create(user=self.request.user)
+            follow.save()
+            instance = get_object_or_404(Follow, id=follow.id)
             instance.follow.add(user)
         return Response({'message': 'now you are following'}, status=status.HTTP_200_OK)
 
@@ -121,13 +143,16 @@ class FollowView(viewsets.ViewSet):
         user = get_object_or_404(User, id=self.kwargs['pk'])
         instance = get_object_or_404(Follow, user=self.request.user)
         instance.follow.remove(user)
-        return Response({'message': 'you are no longer following him'}, status=status.HTTP_200_OK)
+        return Response({'message': 'you are no longer following'}, status=status.HTTP_200_OK)
 
 
 class UserProfileAPIView(RetrieveAPIView):
+    """
+    This view is used to show profile details of the current user
+    """
     serializer_class = ProfileSerializer
     queryset = Follow.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return Follow.objects.get(user__id=self.kwargs['pk'])
+        return Follow.objects.get(user=self.request.user)

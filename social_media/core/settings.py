@@ -147,16 +147,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
-# ACCOUNT_AUTHENTICATION_METHOD = 'email'
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
-# # Following is added to enable registration with email instead of username
-# AUTHENTICATION_BACKENDS = (
-#     # Needed to login by username in Django admin, regardless of allauth
-#     "django.contrib.auth.backends.ModelBackend",
-#     # allauth specific authentication methods, such as login by e-mail
-#     "allauth.account.auth_backends.AuthenticationBackend",
-# )
+
 AUTH_USER_MODEL = 'social.User'
 
 # SIMPLE JWT CONFIGURATION
